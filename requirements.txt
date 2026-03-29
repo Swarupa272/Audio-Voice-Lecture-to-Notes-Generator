@@ -1,0 +1,16 @@
+fastapi
+uvicorn[standard]
+motor
+pydantic
+faster-whisper
+groq
+openai>=1.14.0
+reportlab
+python-multipart
+dnspython
+pydantic-settings
+passlib[bcrypt]==1.7.4
+# bcrypt 4.1.x removed the __about__ module that passlib still imports.
+# Pin to a compatible release to avoid AttributeError: module 'bcrypt' has no attribute '__about__'.
+bcrypt==4.0.1
+itsdangerous

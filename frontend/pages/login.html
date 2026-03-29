@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login - Audio to Notes Generator</title>
+    <link rel="stylesheet" href="/ui/css/login.css" />
+  </head>
+  <body>
+    <nav class="navbar">
+      <div class="nav-container">
+        <div class="nav-logo">
+          <span class="logo-icon">🎙️</span>
+          <span>Audio Notes</span>
+        </div>
+        <ul class="nav-menu">
+          <li class="nav-item"><a href="/ui/" class="nav-link">Home</a></li>
+          <li class="nav-item"><a href="/login" class="nav-link active">Login</a></li>
+          <li class="nav-item"><a href="/registration" class="nav-link">Register</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <main class="container">
+      <div class="auth-container">
+        <div class="auth-box">
+          <div class="auth-header">
+            <h1>Welcome Back</h1>
+            <p>Login to your Audio Notes account</p>
+          </div>
+
+          <form class="auth-form" id="login-form">
+            <div class="form-group">
+              <label for="email">Email Address</label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                placeholder="you@example.com"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="password">Password</label>
+              <input
+                type="password"
+                id="password"
+                name="password"
+                placeholder="Enter your password"
+                minlength="8"
+                maxlength="20"
+                required
+              />
+            </div>
+
+            <div class="form-options">
+              <label class="checkbox">
+                <input type="checkbox" name="remember" />
+                <span>Remember me</span>
+              </label>
+              <a href="#" class="forgot-password">Forgot Password?</a>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block">Login</button>
+          </form>
+
+          <div class="auth-footer">
+            <p>Don't have an account? <a href="/registration">Register here</a></p>
+          </div>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-content">
+        <p>&copy; 2026 Audio Notes Generator. All rights reserved.</p>
+        <ul class="footer-links">
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Terms of Service</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+    </footer>
+
+    <script src="/ui/javascript/login.js"></script>
+  </body>
+</html>

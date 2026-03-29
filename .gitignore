@@ -1,0 +1,8 @@
+﻿.env
+.venv
+__pycache__/
+*.pyc
+*.m4a
+*.mp3
+.DS_Store
+node_modules/

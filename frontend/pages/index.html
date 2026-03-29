@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Lecture Voice-to-Notes Generator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/ui/css/styles.css" />
+  </head>
+  <body>
+    <header class="app-header">
+      <div class="header-text">
+        <h1>AI-Powered Lecture Voice-to-Notes</h1>
+        <p class="subtitle">
+          Upload or record lectures, transcribe with Whisper, and generate study notes using a local LLM.
+        </p>
+        <div class="header-meta">
+          <span class="pill pill-live">Live</span>
+          <span class="pill pill-secure">Encrypted uploads</span>
+          <span class="pill pill-speed">Groq-accelerated</span>
+        </div>
+      </div>
+      <a class="logout-icon" href="/logout" title="Logout" aria-label="Logout">⬜↗</a>
+    </header>
+
+    <main class="app-container">
+      <section class="upload-section card">
+        <div class="card-head">
+          <div>
+            <p class="eyebrow">Step 1</p>
+            <h2>Upload or Record Lecture Audio</h2>
+            <p class="helper">Supports WAV/MP3/M4A. Recording uses your browser mic.</p>
+          </div>
+          <div class="quick-stat">
+            <span class="label">Avg. processing</span>
+            <strong>~90s</strong>
+          </div>
+        </div>
+        <form id="upload-form">
+          <div class="form-row">
+            <label for="title">Title *</label>
+            <input type="text" id="title" name="title" required />
+          </div>
+
+          <div class="form-row">
+            <label for="course">Course</label>
+            <input type="text" id="course" name="course" placeholder="e.g., Operating Systems" />
+          </div>
+
+          <div class="form-row">
+            <label for="lecturer">Lecturer</label>
+            <input type="text" id="lecturer" name="lecturer" placeholder="Dr. Smith" />
+          </div>
+
+          <div class="form-row">
+            <label for="lecture_date">Date</label>
+            <input type="date" id="lecture_date" name="lecture_date" />
+          </div>
+
+          <div class="form-row">
+            <label>Audio File</label>
+            <input type="file" id="audio_file" name="audio_file" accept="audio/*" required />
+          </div>
+
+          <div class="form-row">
+            <span class="divider">OR</span>
+          </div>
+
+          <div class="form-row">
+            <label>Record from Microphone</label>
+            <div class="record-controls">
+              <button type="button" id="record-btn">Start Recording</button>
+              <span id="record-status" class="record-status">Idle</span>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <button type="submit" id="upload-submit">Upload &amp; Transcribe</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="list-section card">
+        <div class="card-head">
+          <div>
+            <p class="eyebrow">Step 2</p>
+            <h2>Lectures</h2>
+            <p class="helper">Select a lecture to view transcript, notes, and AI tools.</p>
+          </div>
+          <div class="quick-stat">
+            <span class="label">Stored</span>
+            <strong id="lecture-count">--</strong>
+          </div>
+        </div>
+        <ul id="lecture-list" class="lecture-list"></ul>
+      </section>
+
+      <section class="detail-section card">
+        <div class="card-head">
+          <div>
+            <p class="eyebrow">Step 3</p>
+            <h2>Transcript &amp; Notes</h2>
+            <p class="helper">Generate notes, summaries, flashcards, and ask questions.</p>
+          </div>
+          <div class="badge-group">
+            <span class="pill pill-soft">LLM-ready</span>
+            <span class="pill pill-soft">RAG search</span>
+          </div>
+        </div>
+        <div id="lecture-detail-empty" class="placeholder">
+          Select a lecture to view its transcript and notes.
+        </div>
+        <div id="lecture-detail" class="lecture-detail hidden">
+          <div class="detail-header">
+            <div>
+              <h3 id="detail-title"></h3>
+              <p id="detail-meta" class="detail-meta"></p>
+              <p id="detail-status" class="detail-status"></p>
+            </div>
+            <div class="detail-actions">
+              <button id="generate-notes-btn">Generate Notes</button>
+              <button id="export-pdf-btn">Export PDF</button>
+              <button id="export-txt-btn">Export Text</button>
+            </div>
+          </div>
+
+          <div class="detail-columns">
+            <div class="detail-column">
+              <h4>Transcript</h4>
+              <pre id="detail-transcript" class="scroll-box"></pre>
+            </div>
+            <div class="detail-column">
+              <h4>AI-Generated Notes</h4>
+              <pre id="detail-notes" class="scroll-box"></pre>
+              <div id="section-summaries" class="summary-list"></div>
+            </div>
+            <div class="detail-column">
+              <div class="insight-card">
+                <div class="insight-row">
+                  <div>
+                    <p class="eyebrow">Need more?</p>
+                    <h4>AI Assistants</h4>
+                    <p class="helper">Use the right rail (ask, summarize, flashcards) after selecting a lecture.</p>
+                  </div>
+                </div>
+                <ul class="insight-list">
+                  <li><span>Ask the notes</span><small>Query the transcript with citations.</small></li>
+                  <li><span>Section summaries</span><small>Generate concise chunked highlights.</small></li>
+                  <li><span>Flashcards</span><small>Create quick recall prompts for study.</small></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="app-footer">
+      <div class="footer-cta">
+        <div>
+          <p class="eyebrow">Need help?</p>
+          <h3>Ask anything or book a walkthrough</h3>
+          <p class="footer-copy">Get quick answers about transcription, AI notes, or exports.</p>
+        </div>
+        <div class="footer-actions">
+          <a class="btn" href="mailto:support@example.com">Email support</a>
+          <a class="btn btn-ghost" href="https://cal.com" target="_blank" rel="noreferrer">Book 15-min call</a>
+        </div>
+      </div>
+      <div class="footer-links">
+        <div class="foot-col">
+          <h4>Product</h4>
+          <a href="/ui/">Home</a>
+          <a href="/login">Login</a>
+          <a href="/registration">Register</a>
+        </div>
+        <div class="foot-col">
+          <h4>Resources</h4>
+          <a href="#features">Features</a>
+          <a href="/ui/css/styles.css">Style guide</a>
+          <a href="/ui/javascript/app.js">Frontend JS</a>
+        </div>
+        <div class="foot-col">
+          <h4>Status</h4>
+          <div class="status-pill live">Live</div>
+          <small>API: http://127.0.0.1:8000</small>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>Runs with faster-whisper transcription, Groq-powered note generation, FastAPI, and MongoDB.</span>
+        <span class="foot-meta">© 2026 Audio Notes Generator</span>
+      </div>
+    </footer>
+
+    <script src="/ui/javascript/app.js"></script>
+  </body>
+  </html>
+
