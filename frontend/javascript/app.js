@@ -49,10 +49,10 @@ function resetLectureState() {
   detailEl.classList.add("hidden");
   detailEmptyEl.classList.remove("hidden");
   detailTranscriptEl.textContent = "";
-  detailNotesEl.textContent = "";
-  summariesContainer.innerHTML = "";
-  askAnswer.textContent = "";
-  askInput.value = "";
+  if (detailNotesEl) detailNotesEl.textContent = "";
+  if (summariesContainer) summariesContainer.innerHTML = "";
+  if (askAnswer) askAnswer.textContent = "";
+  if (askInput) askInput.value = "";
   askHistory = [];
   renderAskHistory();
   flashcards = [];
@@ -84,7 +84,7 @@ function mapStatusToLabel(status) {
 
 async function fetchLectures() {
   try {
-    const res = await fetch(`${API_BASE}/lectures`);
+    const res = await fetch(`${API_BASE}/lectures`, { credentials: "include" });
     if (res.status === 401 || res.status === 403) {
       window.location.href = "/login";
       return;
@@ -182,6 +182,7 @@ function renderSummaries(summaries) {
 }
 
 function renderAskHistory() {
+  if (!askHistoryEl) return;
   askHistoryEl.innerHTML = "";
   if (!askHistory.length) return;
   askHistory.slice(-20).forEach((item) => {
@@ -203,6 +204,7 @@ function renderAskHistory() {
 }
 
 function renderFlashcards() {
+  if (!flashcardsContainer) return;
   flashcardsContainer.innerHTML = "";
   if (!flashcards.length) {
     flashcardsContainer.textContent = "No flashcards yet.";
@@ -234,7 +236,7 @@ function renderFlashcards() {
 async function showLectureDetail(lectureId) {
   currentLectureId = lectureId;
   try {
-    const res = await fetch(`${API_BASE}/lectures/${lectureId}`);
+    const res = await fetch(`${API_BASE}/lectures/${lectureId}`, { credentials: "include" });
     if (!res.ok) throw new Error("Failed to fetch lecture details");
     const lecture = await res.json();
 
@@ -254,14 +256,16 @@ async function showLectureDetail(lectureId) {
 
     detailTranscriptEl.textContent =
       lecture.transcript_text || "Transcript not available.";
-    detailNotesEl.textContent = lecture.notes_text || "Notes not generated yet.";
+    if (detailNotesEl) {
+      detailNotesEl.textContent = lecture.notes_text || "Notes not generated yet.";
+    }
 
     // hydrate summaries/flashcards if already present
     renderSummaries(lecture.section_summaries || []);
     flashcards = lecture.flashcards || [];
     renderFlashcards();
-    askAnswer.textContent = "";
-    askInput.value = "";
+    if (askAnswer) askAnswer.textContent = "";
+    if (askInput) askInput.value = "";
   } catch (err) {
     console.error(err);
     alert("Failed to load lecture details.");
@@ -303,6 +307,7 @@ uploadForm.addEventListener("submit", async (e) => {
     const res = await fetch(`${API_BASE}/lectures`, {
       method: "POST",
       body: formData,
+        credentials: "include",
     });
     if (!res.ok) {
       const errText = await res.text();
@@ -362,6 +367,7 @@ generateNotesBtn.addEventListener("click", async () => {
   try {
     const res = await fetch(`${API_BASE}/lectures/${currentLectureId}/generate-notes`, {
       method: "POST",
+        credentials: "include",
     });
     if (!res.ok) {
       const errText = await res.text();
@@ -381,7 +387,7 @@ generateNotesBtn.addEventListener("click", async () => {
 
 async function downloadFile(url, filename) {
   try {
-    const res = await fetch(url);
+    const res = await fetch(url, { credentials: "include" });
     if (!res.ok) throw new Error("Download failed");
     const blob = await res.blob();
     const link = document.createElement("a");
@@ -415,6 +421,7 @@ exportTxtBtn.addEventListener("click", async () => {
 
 async function fetchSectionSummaries(force = false) {
   if (!currentLectureId) return;
+  if (!summariesContainer) return;
   summarizeSectionsBtn.disabled = true;
   refreshSummariesBtn.disabled = true;
   summariesContainer.textContent = "Loading summaries...";
@@ -441,6 +448,7 @@ async function fetchSectionSummaries(force = false) {
 
 async function askNotes(question) {
   if (!currentLectureId || !question.trim()) return;
+  if (!askAnswer) return;
   askAnswer.textContent = "Thinking...";
   askAnswer.dataset.error = "";
   try {
@@ -457,8 +465,10 @@ async function askNotes(question) {
     renderAskHistory();
   } catch (err) {
     console.error(err);
-    askAnswer.textContent = "Failed to get answer.";
-    askAnswer.dataset.error = err?.message || "Unknown error";
+    if (askAnswer) {
+      askAnswer.textContent = "Failed to get answer.";
+      askAnswer.dataset.error = err?.message || "Unknown error";
+    }
     alert("Ask failed: " + (err?.message || "Unknown error"));
   }
 }
@@ -537,6 +547,7 @@ async function deleteLecture(lectureId, lectureTitle) {
   try {
     const res = await fetch(`${API_BASE}/lectures/${lectureId}`, {
       method: "DELETE",
+      credentials: "include",
     });
     if (!res.ok) {
       const errText = await res.text();

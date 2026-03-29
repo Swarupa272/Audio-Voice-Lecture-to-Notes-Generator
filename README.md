@@ -328,23 +328,8 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 - [FastAPI](https://fastapi.tiangolo.com/) - Modern Python framework
 - [MongoDB](https://www.mongodb.com/) - Flexible NoSQL database
 
+-
 ---
-
-## 👨‍💻 Author
-
-**Bibek Samantray**
-
-AI/ML Enthusiast | Full-Stack Developer
-
-[![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/bibeksamantray)
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://linkedin.com/in/bibek-samantray)
-
----
-
-<div align="center">
-
-### ⭐ Star this repo if you find it useful!
-
-Made with ❤️ and ☕
-
-</div>
+## 📞 Contact
+For questions, feedback, or collaboration, please reach out:
+- Email:swarupaswain2003@gmail.com

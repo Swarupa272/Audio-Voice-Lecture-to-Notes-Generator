@@ -4,11 +4,14 @@ import uuid
 from typing import Dict, List, Optional, Tuple
 
 from groq import Groq
-from openai import OpenAI
+from openai import OpenAI, RateLimitError
 
 from ..config import settings
 
 logger = logging.getLogger(__name__)
+
+# When set, embedding calls are skipped to avoid repeated external errors/quota hits.
+_embeddings_disabled = False
 
 
 class EmbeddingError(RuntimeError):
@@ -95,7 +98,16 @@ def chunk_text(text: str, max_chars: int | None = None, min_chars: int | None = 
 def embed_texts(chunks: List[str]) -> List[List[float]]:
     """Create embeddings using OpenAI embeddings API."""
 
+    global _embeddings_disabled
+
     if not chunks:
+        return []
+    if _embeddings_disabled:
+        logger.info("Embeddings disabled; skipping request.")
+        return []
+    if not settings.OPENAI_API_KEY:
+        logger.warning("Skipping embeddings: OPENAI_API_KEY is not set.")
+        _embeddings_disabled = True
         return []
     try:
         response = client_openai.embeddings.create(
@@ -104,6 +116,10 @@ def embed_texts(chunks: List[str]) -> List[List[float]]:
         )
         vectors: List[List[float]] = [item.embedding for item in response.data]
         return vectors
+    except RateLimitError as exc:  # pragma: no cover - network path
+        logger.warning("Skipping embeddings due to rate limit/quota: %s", exc)
+        _embeddings_disabled = True
+        return []
     except Exception as exc:  # pragma: no cover - network path
         logger.exception("Failed to create embeddings: %s", exc)
         raise EmbeddingError("Embedding generation failed") from exc
@@ -114,6 +130,8 @@ def build_embedding_chunks(text: str) -> List[Dict[str, object]]:
 
     raw_chunks = chunk_text(text)
     vectors = embed_texts(raw_chunks)
+    if not vectors:
+        return []
     embedding_chunks: List[Dict[str, object]] = []
     for chunk_text_val, vector in zip(raw_chunks, vectors):
         embedding_chunks.append(
@@ -132,7 +150,10 @@ def retrieve(query: str, chunks: List[Dict[str, object]], top_k: int | None = No
 
     if not chunks:
         return []
-    query_vec = embed_texts([query])[0]
+    query_vecs = embed_texts([query])
+    if not query_vecs:
+        return []
+    query_vec = query_vecs[0]
     scored: List[Tuple[Dict[str, object], float]] = []
     for chunk in chunks:
         vector = chunk.get("vector") or []

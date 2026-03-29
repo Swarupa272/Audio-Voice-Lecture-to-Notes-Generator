@@ -19,7 +19,7 @@
           <span class="pill pill-speed">Groq-accelerated</span>
         </div>
       </div>
-      <a class="logout-icon" href="/logout" title="Logout" aria-label="Logout">⬜↗</a>
+      <a class="logout-icon" href="/logout" title="Logout" aria-label="Logout">🚫</a>
     </header>
 
     <main class="app-container">
@@ -131,23 +131,12 @@
             <div class="detail-column">
               <h4>AI-Generated Notes</h4>
               <pre id="detail-notes" class="scroll-box"></pre>
-              <div id="section-summaries" class="summary-list"></div>
-            </div>
-            <div class="detail-column">
-              <div class="insight-card">
-                <div class="insight-row">
-                  <div>
-                    <p class="eyebrow">Need more?</p>
-                    <h4>AI Assistants</h4>
-                    <p class="helper">Use the right rail (ask, summarize, flashcards) after selecting a lecture.</p>
-                  </div>
-                </div>
-                <ul class="insight-list">
-                  <li><span>Ask the notes</span><small>Query the transcript with citations.</small></li>
-                  <li><span>Section summaries</span><small>Generate concise chunked highlights.</small></li>
-                  <li><span>Flashcards</span><small>Create quick recall prompts for study.</small></li>
-                </ul>
+
+              <div class="summary-controls">
+                <button id="summarize-sections-btn" type="button">Summarize Sections</button>
+                <button id="refresh-summaries-btn" type="button">Refresh Summaries</button>
               </div>
+              <div id="section-summaries" class="summary-list"></div>
             </div>
           </div>
         </div>
